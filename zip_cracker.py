@@ -79,5 +79,4 @@ class BruteZip:
 
 
 if __name__ == '__main__':
-    BruteZip(r'C:\Users\PC\PycharmProjects\ZipBruteForce\Lock.zip',
-             chars=string.ascii_lowercase, min_length=1, max_length=8).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=8).crack_zip()
