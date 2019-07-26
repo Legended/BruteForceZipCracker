@@ -14,7 +14,7 @@ class BruteZip:
         :param min_length: Minimum length of password.
         :param max_length: Maximum length of password
         """
-        
+
         self.src = src
         self.chars = chars
         self.min_length = min_length
@@ -22,7 +22,7 @@ class BruteZip:
 
     def crack_zip(self):
         """Iterates through each possible combination and prints the results of each scan."""
-        
+
         start = time()
         count = 1
         minimum = self.min_length
@@ -40,8 +40,9 @@ class BruteZip:
                 self.min_length += 1
 
     def check_length_queries(self):
-        """Checks the params for 'max_length' and 'min_length'. 'min_length cannot be greater than 'max_length'."""
-        
+        """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
+        exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
+
         if self.max_length is not None:
             if self.min_length > self.max_length:
                 raise ValueError("'min_length' cannot be greater than 'max_length'")
@@ -51,7 +52,7 @@ class BruteZip:
 
     def total_scan_results(self, minimum):
         """Calculates the possible amount of combinations it would take to crack a password."""
-        
+
         exponent = minimum
         results = []
         while exponent <= self.max_length:
@@ -61,7 +62,7 @@ class BruteZip:
 
     def success_message(self, count, minimum, pwd, start):
         """Message printed when the password has successfully been cracked."""
-        
+
         if self.max_length is not None:
             fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n|{:^88}|\n+{}+"
             return print(fmt.format(
