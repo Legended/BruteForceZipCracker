@@ -34,7 +34,7 @@ class BruteZip:
 
         with zipfile.ZipFile(self.src, 'r') as zf:
             while True:
-                self.check_length_queries()
+                self.check_max_length()
                 for pwd in itertools.product(self.chars, repeat=self.min_length):
                     try:
                         zf.extractall(pwd=bytes(''.join(pwd), encoding='utf-8'))
@@ -45,7 +45,7 @@ class BruteZip:
                         count += 1
                 self.min_length += 1
 
-    def check_length_queries(self):
+    def check_max_length(self):
         """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
         exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
 
