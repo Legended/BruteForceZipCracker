@@ -21,16 +21,16 @@ class BruteZip:
         self.min_length = min_length
         self.max_length = max_length
 
+        if self.max_length is not None:
+            if self.min_length > self.max_length:
+                raise ValueError("'min_length' cannot be greater than 'max_length'")
+
     def crack_zip(self):
         """Iterates through each possible combination and prints the results of each scan."""
 
         start = time()
         count = 1
         minimum = self.min_length
-
-        if self.max_length is not None:
-            if self.min_length > self.max_length:
-                raise ValueError("'min_length' cannot be greater than 'max_length'")
 
         with zipfile.ZipFile(self.src, 'r') as zf:
             while True:
@@ -83,4 +83,4 @@ class BruteZip:
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=5, max_length=5).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=6, max_length=5).crack_zip()
