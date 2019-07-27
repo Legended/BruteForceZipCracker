@@ -14,7 +14,7 @@ class BruteZip:
         :param min_length: Minimum length of password.
         :param max_length: Maximum length of password. If 'max_length' is None, the password will be
          scanned for indefinitely.
-        :param extract_file: If True, extract the contents of the zip file to the CWD.
+        :param extract_file: If True, extract the contents of the zip file to the current working directory.
         """
 
         self.src = src
@@ -33,24 +33,34 @@ class BruteZip:
         start = time()
         count = 1
         minimum = self.min_length
+        filename = self.get_smallest_file_from_zip()
 
         with zipfile.ZipFile(self.src, 'r') as zf:
-            smallest_file = sorted(zip([f.filename for f in zf.infolist()],
-                                       [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
             while True:
                 self.check_max_length()
                 for pwd in itertools.product(self.chars, repeat=self.min_length):
                     try:
-                        zf.read(smallest_file, pwd=bytes(''.join(pwd), encoding='utf-8'))
+                        zf.read(filename, pwd=bytes(''.join(pwd), encoding='utf-8'))
                         self.success_message(count, minimum, pwd, start)
-                        if self.extract_file:
-                            zf.extractall(pwd=bytes(''.join(pwd), encoding='utf-8'))
+                        self.unzip(''.join(pwd))
                         return
                     except (RuntimeError, zipfile.BadZipFile):
                         print(f"[{count}] [-] Password Failed: {''.join(pwd)} | "
                               f"Elapsed Time: {timedelta(seconds=time() - start)}")
                         count += 1
                 self.min_length += 1
+
+    def unzip(self, pwd):
+        """Extracts the contents of the zipfile to the current working directory if 'extract_file' is True."""
+        if self.extract_file:
+            with zipfile.ZipFile(self.src, 'r') as zf:
+                zf.extractall(pwd=bytes(pwd, encoding='utf-8'))
+
+    def get_smallest_file_from_zip(self):
+        """Returns the name of the smallest file from the zip file."""
+        with zipfile.ZipFile(self.src, 'r') as zf:
+            return sorted(zip([f.filename for f in zf.infolist()],
+                              [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
 
     def check_max_length(self):
         """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
