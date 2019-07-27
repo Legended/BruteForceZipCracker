@@ -54,7 +54,9 @@ class BruteZip:
         """Extracts the contents of the zip file to the current working directory if 'extract_file' is True."""
         if self.extract_file:
             with zipfile.ZipFile(self.src, 'r') as zf:
+                print('Extracting zip file...')
                 zf.extractall(pwd=bytes(pwd, encoding='utf-8'))
+                print('Zip file extracted successfully!')
 
     def get_smallest_file_from_zip(self):
         """Returns the name of the smallest file from the zip file."""
@@ -89,7 +91,7 @@ class BruteZip:
                 "[+] Password Found!",
                 f"Attempts: {count} / {self.total_combinations(minimum)}",
                 f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
-        fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
+        fmt = f"\n+{'-' * 88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-' * 88}+"
         return print(fmt.format(
             "[+] Password Found!",
             f"Attempts: {count} | Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
