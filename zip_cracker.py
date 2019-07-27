@@ -1,25 +1,27 @@
 from datetime import timedelta
 from time import time
 import itertools, string
-import zipfile, zlib
+import zipfile
 
 
 class BruteZip:
 
-    def __init__(self, src='', chars=string.printable.strip(), min_length=1, max_length=None):
+    def __init__(self, src='', chars=string.printable.strip(), min_length=1, max_length=None, extract_file=False):
         """This script cracks a zip file via brute force. This is intended for educational purposes only.
 
         :param src: Path of zip file.
         :param chars: Characters to scan through.
         :param min_length: Minimum length of password.
-        :param max_length: Maximum length of password. If 'max_length' is set to none, the password will be
-        scanned for indefinitely.
+        :param max_length: Maximum length of password. If 'max_length' is None, the password will be
+         scanned for indefinitely.
+        :param extract_file: If True, extract the contents of the zip file to the CWD.
         """
 
         self.src = src
         self.chars = chars
         self.min_length = min_length
         self.max_length = max_length
+        self.extract_file = extract_file
 
         if self.max_length is not None:
             if self.min_length > self.max_length:
@@ -33,13 +35,18 @@ class BruteZip:
         minimum = self.min_length
 
         with zipfile.ZipFile(self.src, 'r') as zf:
+            smallest_file = sorted(zip([f.filename for f in zf.infolist()],
+                                       [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
             while True:
                 self.check_max_length()
                 for pwd in itertools.product(self.chars, repeat=self.min_length):
                     try:
-                        zf.extractall(pwd=bytes(''.join(pwd), encoding='utf-8'))
-                        return self.success_message(count, minimum, pwd, start)
-                    except (RuntimeError, zlib.error, zipfile.BadZipFile):
+                        zf.read(smallest_file, pwd=bytes(''.join(pwd), encoding='utf-8'))
+                        self.success_message(count, minimum, pwd, start)
+                        if self.extract_file:
+                            zf.extractall(pwd=bytes(''.join(pwd), encoding='utf-8'))
+                        return
+                    except (RuntimeError, zipfile.BadZipFile):
                         print(f"[{count}] [-] Password Failed: {''.join(pwd)} | "
                               f"Elapsed Time: {timedelta(seconds=time() - start)}")
                         count += 1
@@ -53,7 +60,7 @@ class BruteZip:
             input('Scan exceeded max length. Press ENTER to exit...')
             raise SystemExit
 
-    def total_scan_results(self, minimum):
+    def total_combinations(self, minimum):
         """Calculates the possible amount of combinations it would take to crack a password."""
 
         exponent = minimum
@@ -71,7 +78,7 @@ class BruteZip:
             return print(fmt.format(
                 '-' * 88,
                 "[+] Password Found!",
-                f"Attempts: {count} / {self.total_scan_results(minimum)}",
+                f"Attempts: {count} / {self.total_combinations(minimum)}",
                 f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}",
                 '-' * 88))
         fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n+{}+"
@@ -83,4 +90,4 @@ class BruteZip:
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=6, max_length=5).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=8, extract_file=True).crack_zip()
