@@ -38,21 +38,20 @@ class BruteZip:
         with zipfile.ZipFile(self.src, 'r') as zf:
             while True:
                 self.check_max_length()
-                for pwd in itertools.product(self.chars, repeat=self.min_length):
+                for pwd in itertools.product(self.chars, repeat=minimum):
                     try:
                         zf.read(filename, pwd=bytes(''.join(pwd), encoding='utf-8'))
-                        self.success_message(count, minimum, pwd, start)
+                        self.success_message(count, self.min_length, pwd, start)
                         self.unzip(''.join(pwd))
                         return
                     except (RuntimeError, zipfile.BadZipFile):
                         print(f"[{count}] [-] Password Failed: {''.join(pwd)} | "
                               f"Elapsed Time: {timedelta(seconds=time() - start)}")
                         count += 1
-                self.min_length += 1
+                minimum += 1
 
     def unzip(self, pwd):
         """Extracts the contents of the zip file to the current working directory if 'extract_file' is True."""
-        
         if self.extract_file:
             with zipfile.ZipFile(self.src, 'r') as zf:
                 print('Extracting zip file...')
@@ -61,7 +60,6 @@ class BruteZip:
 
     def get_smallest_file_from_zip(self):
         """Returns the name of the smallest file from the zip file."""
-        
         with zipfile.ZipFile(self.src, 'r') as zf:
             return sorted(zip([f.filename for f in zf.infolist()],
                               [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
@@ -93,11 +91,11 @@ class BruteZip:
                 "[+] Password Found!",
                 f"Attempts: {count} / {self.total_combinations(minimum)}",
                 f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
-        fmt = f"\n+{'-' * 88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-' * 88}+"
+        fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
         return print(fmt.format(
             "[+] Password Found!",
             f"Attempts: {count} | Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=8, extract_file=True).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=8, extract_file=False).crack_zip()
