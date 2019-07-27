@@ -52,6 +52,7 @@ class BruteZip:
 
     def unzip(self, pwd):
         """Extracts the contents of the zip file to the current working directory if 'extract_file' is True."""
+        
         if self.extract_file:
             with zipfile.ZipFile(self.src, 'r') as zf:
                 print('Extracting zip file...')
@@ -60,6 +61,7 @@ class BruteZip:
 
     def get_smallest_file_from_zip(self):
         """Returns the name of the smallest file from the zip file."""
+        
         with zipfile.ZipFile(self.src, 'r') as zf:
             return sorted(zip([f.filename for f in zf.infolist()],
                               [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
