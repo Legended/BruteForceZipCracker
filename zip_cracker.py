@@ -13,7 +13,7 @@ class BruteZip:
         :param chars: Characters to scan through.
         :param min_length: Minimum length of password.
         :param max_length: Maximum length of password. If 'max_length' is set to none, the password will be
-                           scanned for indefinitely.
+        scanned for indefinitely.
         """
 
         self.src = src
