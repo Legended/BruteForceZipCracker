@@ -27,6 +27,11 @@ class BruteZip:
         start = time()
         count = 1
         minimum = self.min_length
+
+        if self.max_length is not None:
+            if self.min_length > self.max_length:
+                raise ValueError("'min_length' cannot be greater than 'max_length'")
+
         with zipfile.ZipFile(self.src, 'r') as zf:
             while True:
                 self.check_length_queries()
@@ -43,13 +48,10 @@ class BruteZip:
     def check_length_queries(self):
         """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
         exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
-        
+
         if self.max_length is not None and self.min_length == self.max_length + 1:
             input('Scan exceeded max length. Press ENTER to exit...')
             raise SystemExit
-        if self.max_length is not None:
-            if self.min_length > self.max_length:
-                raise ValueError("'min_length' cannot be greater than 'max_length'")
 
     def total_scan_results(self, minimum):
         """Calculates the possible amount of combinations it would take to crack a password."""
@@ -81,4 +83,4 @@ class BruteZip:
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=8).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=5, max_length=5).crack_zip()
