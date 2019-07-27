@@ -10,9 +10,10 @@ class BruteZip:
         """This script cracks a zip file via brute force. This is intended for educational purposes only.
 
         :param src: Path of zip file.
-        :param chars: Character to scan for.
+        :param chars: Characters to scan through.
         :param min_length: Minimum length of password.
-        :param max_length: Maximum length of password
+        :param max_length: Maximum length of password. If 'max_length' is set to none, the password will be
+                           scanned for indefinitely.
         """
 
         self.src = src
@@ -66,14 +67,14 @@ class BruteZip:
         if self.max_length is not None:
             fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n|{:^88}|\n+{}+"
             return print(fmt.format(
-                f"{'-' * 88}",
+                '-' * 88,
                 "[+] Password Found!",
                 f"Attempts: {count} / {self.total_scan_results(minimum)}",
                 f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}",
                 '-' * 88))
         fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n+{}+"
         return print(fmt.format(
-            f"{'-' * 88}",
+            '-' * 88,
             "[+] Password Found!",
             f"Attempts: {count} | Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}",
             '-' * 88))
