@@ -51,7 +51,7 @@ class BruteZip:
                 self.min_length += 1
 
     def unzip(self, pwd):
-        """Extracts the contents of the zipfile to the current working directory if 'extract_file' is True."""
+        """Extracts the contents of the zip file to the current working directory if 'extract_file' is True."""
         if self.extract_file:
             with zipfile.ZipFile(self.src, 'r') as zf:
                 zf.extractall(pwd=bytes(pwd, encoding='utf-8'))
@@ -84,19 +84,15 @@ class BruteZip:
         """Message printed when the password has successfully been cracked."""
 
         if self.max_length is not None:
-            fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n|{:^88}|\n+{}+"
+            fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
             return print(fmt.format(
-                '-' * 88,
                 "[+] Password Found!",
                 f"Attempts: {count} / {self.total_combinations(minimum)}",
-                f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}",
-                '-' * 88))
-        fmt = "\n+{}+\n|{:^88}|\n|{:^88}|\n+{}+"
+                f"Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
+        fmt = f"\n+{'-' * 88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-' * 88}+"
         return print(fmt.format(
-            '-' * 88,
             "[+] Password Found!",
-            f"Attempts: {count} | Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}",
-            '-' * 88))
+            f"Attempts: {count} | Password: {''.join(pwd)} | Elapsed Time: {timedelta(seconds=time() - start)}"))
 
 
 if __name__ == '__main__':
