@@ -98,6 +98,7 @@ class BruteZip:
                 "[+] Password Found!",
                 f"Attempts: {count} / {self.total_combinations()}",
                 f"Password: {pwd} | Elapsed Time: {timedelta(seconds=time() - start)}"))
+        
         fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
         return print(fmt.format(
             "[+] Password Found!",
