@@ -78,6 +78,7 @@ class BruteZip:
 
         exponent = self.min_length
         results = []
+        
         while exponent <= self.max_length:
             results.append(len(self.chars) ** exponent)
             exponent += 1
