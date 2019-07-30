@@ -30,8 +30,8 @@ class BruteZip:
     def crack_zip(self):
         """Iterates through each possible combination and prints the results of each scan until a password is found."""
 
-        start = time()
         count = 1
+        start = time()
         minimum = self.min_length
         filename = self.get_smallest_member()
 
