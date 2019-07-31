@@ -23,8 +23,8 @@ class BruteZip:
         self.max_length = max_length
         self.extract_file = extract_file
 
-        __err__ = "'min_length' cannot be greater than 'max_length'"
         if self.max_length is not None and self.min_length > self.max_length:
+            __err__ = "'min_length' cannot be greater than 'max_length'"
             raise ValueError(__err__)
 
     def crack_zip(self):
@@ -87,7 +87,7 @@ class BruteZip:
     @staticmethod
     def failed_message(count, pwd, start):
         """Message printed when password has failed."""
-        
+
         print(f"[{count}] [-] Password Failed: {pwd} | "
               f"Elapsed Time: {timedelta(seconds=time() - start)}")
 
