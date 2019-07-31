@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
@@ -27,7 +27,8 @@ class BruteZip:
         self.extract_file = extract_file
 
         if self.max_length is not None and self.min_length > self.max_length:
-            min_max_error = "'min_length' cannot be greater than 'max_length'"
+            min_max_error = f"'min_length' cannot be greater than 'max_length'. " \
+                            f"'min_length' should be less than or equal to {self.max_length}."
             raise ValueError(min_max_error)
 
     def crack_zip(self):
@@ -73,7 +74,9 @@ class BruteZip:
         exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
 
         if self.max_length is not None and minimum > self.max_length:
-            input('Scan exceeded max length. Press ENTER to exit...')
+            print(f"Password not found. Password length exceeds {self.max_length} and/or the password contains "
+                  f"characters not defined in '{self.chars}'.")
+            input('Press ENTER to exit...')
             raise SystemExit
 
     def total_combinations(self):
@@ -110,4 +113,4 @@ class BruteZip:
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=4, max_length=3).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=1, max_length=3).crack_zip()
