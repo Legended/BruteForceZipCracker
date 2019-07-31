@@ -27,8 +27,8 @@ class BruteZip:
         self.extract_file = extract_file
 
         if self.max_length is not None and self.min_length > self.max_length:
-            error = "'min_length' cannot be greater than 'max_length'"
-            raise ValueError(error)
+            min_max_error = "'min_length' cannot be greater than 'max_length'"
+            raise ValueError(min_max_error)
 
     def crack_zip(self):
         """Iterates through each possible combination and prints the results of each scan until a password is found."""
