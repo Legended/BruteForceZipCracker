@@ -1,7 +1,7 @@
 from datetime import timedelta
 from time import time
-import itertools, string
 from zipfile import ZipFile, BadZipFile
+import itertools, string
 
 
 class BruteZip:
@@ -23,9 +23,9 @@ class BruteZip:
         self.max_length = max_length
         self.extract_file = extract_file
 
-        if self.max_length is not None:
-            if self.min_length > self.max_length:
-                raise ValueError("'min_length' cannot be greater than 'max_length'")
+        __err__ = "'min_length' cannot be greater than 'max_length'"
+        if self.max_length is not None and self.min_length > self.max_length:
+            raise ValueError(__err__)
 
     def crack_zip(self):
         """Iterates through each possible combination and prints the results of each scan until a password is found."""
@@ -37,7 +37,7 @@ class BruteZip:
 
         with ZipFile(self.src, 'r') as zf:
             while True:
-                self.check_max_length()
+                self.check_max_length(minimum)
                 for pwd in itertools.product(self.chars, repeat=minimum):
                     try:
                         zf.read(filename, pwd=bytes(''.join(pwd), encoding='utf-8'))
@@ -56,7 +56,7 @@ class BruteZip:
             with ZipFile(self.src, 'r') as zf:
                 print('Extracting zip file...')
                 zf.extractall(pwd=bytes(pwd, encoding='utf-8'))
-                print('Zip file extracted successfully!')
+                print('Zip file extracted!')
 
     def get_smallest_member(self):
         """Returns the name of the smallest file from the zip file."""
@@ -65,11 +65,11 @@ class BruteZip:
             return sorted(zip([f.filename for f in zf.infolist()],
                               [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
 
-    def check_max_length(self):
+    def check_max_length(self, minimum):
         """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
         exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
 
-        if self.max_length is not None and self.min_length == self.max_length + 1:
+        if self.max_length is not None and minimum > self.max_length:
             input('Scan exceeded max length. Press ENTER to exit...')
             raise SystemExit
 
@@ -78,7 +78,7 @@ class BruteZip:
 
         exponent = self.min_length
         results = []
-        
+
         while exponent <= self.max_length:
             results.append(len(self.chars) ** exponent)
             exponent += 1
@@ -86,24 +86,25 @@ class BruteZip:
 
     @staticmethod
     def failed_message(count, pwd, start):
-        return print(f"[{count}] [-] Password Failed: {pwd} | "
-                     f"Elapsed Time: {timedelta(seconds=time() - start)}")
+        """Message printed when password has failed."""
+        
+        print(f"[{count}] [-] Password Failed: {pwd} | "
+              f"Elapsed Time: {timedelta(seconds=time() - start)}")
 
     def success_message(self, count, pwd, start):
         """Message printed when the password has successfully been cracked."""
 
         if self.max_length is not None:
             fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
-            return print(fmt.format(
-                "[+] Password Found!",
-                f"Attempts: {count} / {self.total_combinations()}",
-                f"Password: {pwd} | Elapsed Time: {timedelta(seconds=time() - start)}"))
-        
-        fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
-        return print(fmt.format(
-            "[+] Password Found!",
-            f"Attempts: {count} | Password: {pwd} | Elapsed Time: {timedelta(seconds=time() - start)}"))
+            print(fmt.format("[+] Password Found!",
+                             f"Attempts: {count} / {self.total_combinations()}",
+                             f"Password: {pwd} | Elapsed Time: {timedelta(seconds=time() - start)}"))
+        else:
+            fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
+            print(fmt.format("[+] Password Found!",
+                             f"Attempts: {count} | Password: {pwd} | "
+                             f"Elapsed Time: {timedelta(seconds=time() - start)}"))
 
 
 if __name__ == '__main__':
-    BruteZip('Lock.zip', chars=string.ascii_letters+string.digits, min_length=1, max_length=12).crack_zip()
+    BruteZip('Lock.zip', chars=string.ascii_lowercase, min_length=4, max_length=3).crack_zip()
