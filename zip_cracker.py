@@ -19,7 +19,6 @@ class BruteZip:
          scanned for indefinitely.
         :param extract_file: If True, extract the contents of the zip file to the current working directory.
         """
-
         self.src = src
         self.chars = chars
         self.min_length = min_length
@@ -32,8 +31,8 @@ class BruteZip:
             raise ValueError(min_max_error)
 
     def crack_zip(self):
-        """Iterates through each possible combination and prints the results of each scan until a password is found."""
-
+        """Iterates through each possible combination and prints the results of each scan until a password is found.
+        """
         count = 1
         start = time()
         minimum = self.min_length
@@ -54,8 +53,8 @@ class BruteZip:
                 minimum += 1
 
     def unzip(self, pwd):
-        """Extracts the contents of the zip file to the current working directory if 'extract_file' is True."""
-
+        """Extracts the contents of the zip file to the current working directory if 'extract_file' is True.
+        """
         if self.extract_file:
             with ZipFile(self.src, 'r') as zf:
                 print('Extracting zip file...')
@@ -63,16 +62,16 @@ class BruteZip:
                 print('Zip file extracted!')
 
     def get_smallest_member(self):
-        """Returns the name of the smallest file from the zip file."""
-
+        """Returns the name of the smallest file from the zip file.
+        """
         with ZipFile(self.src, 'r') as zf:
             return sorted(zip([f.filename for f in zf.infolist()],
                               [f.file_size for f in zf.infolist()]), key=lambda x: x[1])[0][0]
 
     def check_max_length(self, minimum):
         """Checks to see if the scan has reached 'max_length'. If 'max_length' has been reached then the password
-        exceeds'max_length' and/or the password contains characters not defined in 'chars'."""
-
+        exceeds'max_length' and/or the password contains characters not defined in 'chars'.
+        """
         if self.max_length is not None and minimum > self.max_length:
             print(f"Password not found. Password length exceeds {self.max_length} and/or the password contains "
                   f"characters not defined in '{self.chars}'.")
@@ -80,8 +79,8 @@ class BruteZip:
             raise SystemExit
 
     def total_combinations(self):
-        """Calculates the possible amount of combinations it would take to crack a password."""
-
+        """Calculates the possible amount of combinations it would take to crack a password.
+        """
         exponent = self.min_length
         results = []
 
@@ -92,14 +91,14 @@ class BruteZip:
 
     @staticmethod
     def failed_message(count, pwd, start):
-        """Message printed when password has failed."""
-
+        """Message printed when password has failed.
+        """
         print(f"[{count}] [-] Password Failed: {pwd} | "
               f"Elapsed Time: {timedelta(seconds=time() - start)}")
 
     def success_message(self, count, pwd, start):
-        """Message printed when the password has successfully been cracked."""
-
+        """Message printed when the password has successfully been cracked.
+        """
         if self.max_length is not None:
             fmt = f"\n+{'-'*88}+\n|{{:^88}}|\n|{{:^88}}|\n|{{:^88}}|\n+{'-'*88}+"
             print(fmt.format("[+] Password Found!",
